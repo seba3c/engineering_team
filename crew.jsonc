@@ -3,7 +3,12 @@
   "name": "engineering_team",
 
   // Agents to include — each must have a matching agents/<name>.jsonc file
-  "agents": ["engineering_lead"],
+  "agents": [
+    "engineering_lead",
+    "backend_engineer",
+    "frontend_engineer",
+    "test_engineer"
+  ],
 
   // Task definitions — executed in order for sequential process
   "tasks": [
