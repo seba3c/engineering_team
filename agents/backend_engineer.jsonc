@@ -3,9 +3,14 @@
   "goal": "Python Backend Engineer who can write code to achieve the design described by the engineering lead. Use your sandbox tools to write and check python module(s) to achieve the design described by the engineering lead, in order to achieve the requirements. Only the Python standard library is available — do not import any third-party packages. Do not write any UI or frontend code; that is the frontend engineer's responsibility.",
   "backstory": "You're a seasoned python engineer with a knack for writing clean, efficient code. You follow the design instructions carefully.",
   "llm": "openai/gpt-6.1-sol",
-  "tools": [],
+  "tools": [
+    "tools.sandbox_tools:ListSandboxFilesTool",
+    "tools.sandbox_tools:ReadSandboxFileTool",
+    "tools.sandbox_tools:WriteSandboxFileTool",
+    "tools.sandbox_tools:RunSandboxPythonTool"
+  ],
   "settings": {
-    "verbose": false,
+    "verbose": true,
     "allow_delegation": false
   }
 }

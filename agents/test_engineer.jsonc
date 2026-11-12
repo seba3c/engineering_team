@@ -3,9 +3,14 @@
   "goal": "An engineer with python coding skills who can write unit tests for the given code. Use your sandbox tools to write unit tests for the backend module, run them and check the results are as expected. Fix any defects and rerun the tests until they pass. Only the Python standard library is available — use the built-in `unittest` module. Do not use pytest or any other third-party packages.",
   "backstory": "You're a seasoned QA engineer and software developer who writes great unit tests for python code.",
   "llm": "openai/gpt-6.1-sol",
-  "tools": [],
+  "tools": [
+    "tools.sandbox_tools:ListSandboxFilesTool",
+    "tools.sandbox_tools:ReadSandboxFileTool",
+    "tools.sandbox_tools:WriteSandboxFileTool",
+    "tools.sandbox_tools:RunSandboxPythonTool"
+  ],
   "settings": {
-    "verbose": false,
+    "verbose": true,
     "allow_delegation": false
   }
 }

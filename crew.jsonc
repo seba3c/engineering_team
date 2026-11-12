@@ -14,14 +14,14 @@
   "tasks": [
     {
       // Task identifier
-      "name": "placeholder_task",
+      "name": "design_task",
 
       // What the task should accomplish
-      // Use {placeholder} inputs here; crewai run prompts for missing values
-      "description": "{placeholder}",
+      // Use {requirements} inputs here; crewai run prompts for missing values
+      "description": "Take the high level requirements described here and prepare a detailed design for the engineering team; Here are the requirements: {requirements} IMPORTANT: Only output the design in markdown format, laying out the module(s), classes, functions. Do not actually write any code. Function or method signatures only. You should assign work to the following engineers: backend_engineer, frontend_engineer, test_engineer. The backend_engineer should write the backend python code. The frontend_engineer should make a gradio app. The test_engineer should write unit tests for the backend module. All engineers will be working in the same sandbox directory. There is no directory structure, all files are in the same directory. Everything runs in a uv project with gradio installed.\n",
 
       // Clear definition of what the output should look like
-      "expected_output": "",
+      "expected_output": "A detailed design to achieve the requirements, identifying code structure, and assignments to the engineers.\n",
 
       // Optional task guardrail(s) validate output before completion
       // Use "guardrail" for one rule or "guardrails" for many
@@ -46,13 +46,43 @@
       // "security_config": {},
 
       // Which agent handles this task
-      "agent": "engineering_lead"
+      "agent": "engineering_lead",
+      "output_file": "sandbox/design.md"
 
       // "tools": [],
       // "human_input": false,
       // "async_execution": false
+    },
+    {
+      "name": "code_task",
+      "description": "Write a python code that implements the design described by the engineering lead, in order to achieve the requirements. Here are the requirements: {requirements}\n",
+      "expected_output": "Python files written to the sandbox and tested that implement the design and achieve the requirements. IMPORTANT: Use your sandbox tools to write and check the code.\n",
+      "agent": "backend_engineer",
+      "context": [
+        "design_task"
+      ]
+    },
+    {
+      "name": "frontend_task",
+      "description": "Write a gradio UI in a module app.py that demonstrates the backend code, as described in the design. Assume there is only 1 user, and have the UI be professional, polished, clean. Then write a separate validation script (e.g. _validate.py) that imports app.py and confirms the Blocks object constructs without error, and run it via your sandbox tools. IMPORTANT: the validation script must NOT call `.launch()` — that would block until timeout. Just import and instantiate. Here are the requirements: {requirements}\n",
+      "expected_output": "A gradio UI in module app.py written to the sandbox that demonstrates the functionality. The file should be ready so that it can be run as-is, in the same sandbox directory as the backend code. IMPORTANT: Use your sandbox tools to write and check the code.\n",
+      "agent": "frontend_engineer",
+      "context": [
+        "code_task",
+        "design_task"
+      ]
+    },
+    {
+      "name": "test_task",
+      "description": "Write unit tests for the backend module, in a single test file, using the stdlib `unittest` module. Do not write tests for app.py (the gradio frontend). Fix any errors in the backend code so that the unit tests pass. Keep working until all unit tests pass. If you change any backend code, ensure that the unit tests pass and that the gradio app in app.py will still work. Avoid making any changes that might break the gradio app in app.py.\n",
+      "expected_output": "A single test file that can be run to test the backend module. IMPORTANT: Use your sandbox tools to write and run the unit tests. Output a summary of the results of the unit tests.\n",
+      "agent": "test_engineer",
+      "context": [
+        "code_task",
+        "design_task"
+      ],
+      "output_file": "sandbox/test_summary.md"
     }
-
   ],
 
   // Execution process
@@ -62,9 +92,13 @@
 
   // Enable verbose logging during execution
   "verbose": true,
+  "tracing": true,
+  "before_kickoff_callbacks": [
+    {"python": "tools.sandbox_tools.prepare_sandbox"}
+  ],
 
   // Enable crew memory — persists context and learnings across tasks
-  "memory": true,
+  "memory": false,
 
   // Automatically plan the execution strategy before running tasks
   // "planning": false,
@@ -99,5 +133,7 @@
   // Use {placeholder} in agent or task text, for example:
   // "description": "Research {topic} and write a brief"
   // `crewai run` prompts for any placeholders missing from this object.
-  "inputs": {}
+  "inputs": {
+    "requirements": "\nA simple account management system for a trading simulation platform.\nThe system should allow users to create an account, deposit funds, and withdraw funds.\nThe system should allow users to record that they have bought or sold shares, providing a quantity.\nThe system should calculate the total value of the user's portfolio, and the profit or loss from the initial deposit.\nThe system should be able to report the holdings of the user at any point in time.\nThe system should be able to report the profit or loss of the user at any point in time.\nThe system should be able to list the transactions that the user has made over time.\nThe system should prevent the user from withdrawing funds that would leave them with a negative balance, or\n from buying more shares than they can afford, or selling shares that they don't have.\n The system has access to a function get_share_price(symbol) which returns the current price of a share, and includes a test implementation that returns fixed prices for AAPL, TSLA, GOOGL.\n"
+  }
 }
