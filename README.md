@@ -2,6 +2,10 @@
 
 A CrewAI project using JSON-first configuration to turn requirements into a working Python application. The engineering lead designs the solution and assigns work, the backend engineer implements the Python logic, the frontend engineer builds and validates a Gradio UI, and the test engineer writes and runs backend unit tests and fixes defects. The agents work sequentially in a shared sandbox.
 
+<p align="center">
+  <img src="docs/images/engineering-team-run.png" alt="CrewAI Engineering Team running tasks in the terminal" width="600">
+</p>
+
 > **Lab / experimentation project.** This repo is a learning lab, not a production system. It is based on the CrewAI week of 
 > the [Master AI Agentic Engineering - build autonomous AI Agents](https://github.com/ed-donner/agents/tree/main/3_crewai) by 
 > Ed Donner. 
